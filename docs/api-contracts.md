@@ -30,6 +30,9 @@ All API routes return JSON.
 - temperatureC: number
 - conditionCode: WeatherCondition
 - isDay?: boolean
+- timezone?: string (IANA timezone identifier, e.g., "America/New_York")
+- hourly?: HourlyForecast[] (24-hour forecast)
+- daily?: DailyForecast[] (7-day forecast)
 
 ### WeatherCondition (normalized)
 
@@ -41,6 +44,24 @@ One of:
 - snow
 - fog
 - thunder
+
+### HourlyForecast
+
+- time: string (ISO 8601 datetime string)
+- temperatureC: number
+- conditionCode: WeatherCondition
+- isDay?: boolean
+- precipitation?: number (mm)
+- humidity?: number (percentage)
+
+### DailyForecast
+
+- date: string (YYYY-MM-DD format)
+- temperatureMaxC: number
+- temperatureMinC: number
+- conditionCode: WeatherCondition
+- precipitation?: number (mm)
+- precipitationProbability?: number (percentage)
 
 ## GET /api/cities?query=
 
@@ -61,17 +82,25 @@ Errors:
 
 ---
 
-## GET /api/weather?lat=&lon=
+## GET /api/weather?lat=&lon=&locationName=
 
-Purpose: fetch weather for coordinates using Open-Meteo Forecast.
+Purpose: fetch current weather and forecasts (24-hour hourly + 7-day daily) for coordinates using Open-Meteo Forecast.
 
 Query:
 
-- lat: number
-- lon: number
+- lat: number (latitude, -90 to 90)
+- lon: number (longitude, -180 to 180)
+- locationName: string (optional, defaults to coordinates if not provided)
 
 200:
 { "data": Weather }
+
+The Weather object includes:
+
+- Current weather (temperature, condition, isDay)
+- Optional timezone (IANA timezone identifier)
+- Optional hourly array (24-hour forecast with hourly temperature, condition, precipitation, humidity)
+- Optional daily array (7-day forecast with daily min/max temperatures, condition, precipitation probability)
 
 Errors:
 

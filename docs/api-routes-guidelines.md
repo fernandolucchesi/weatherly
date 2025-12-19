@@ -17,7 +17,8 @@
 - /api/cities calls Open-Meteo Geocoding:
   - resolves query -> candidate locations with lat/lon
 - /api/weather calls Open-Meteo Forecast:
-  - uses lat/lon to retrieve current weather fields used by UI
+  - uses lat/lon to retrieve current weather, 24-hour hourly forecast, and 7-day daily forecast
+  - returns normalized Weather object with current conditions, hourly array, and daily array
 
 ## Validation (Zod required)
 

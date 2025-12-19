@@ -186,8 +186,8 @@ export async function getCurrentWeather(
       precipitation: hourly.precipitation?.[index],
       humidity: hourly.relativehumidity_2m?.[index],
     }))
-    // Limit to next 24 hours
-    hourlyForecast = hourlyForecast.slice(0, 24)
+    // Limit to next 48 hours as a buffer, we will display 24 hours of forecast in the UI adjusted for the location's timezone
+    hourlyForecast = hourlyForecast.slice(0, 48)
   }
 
   // Map daily forecast data
