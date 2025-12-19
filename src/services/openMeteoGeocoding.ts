@@ -37,7 +37,7 @@ const GEOCODING_API_URL = 'https://geocoding-api.open-meteo.com/v1/search'
 export async function searchCities(query: string): Promise<City[]> {
   const url = new URL(GEOCODING_API_URL)
   url.searchParams.set('name', query)
-  url.searchParams.set('count', '5') // Limit results
+  url.searchParams.set('count', '10') // Limit results
   url.searchParams.set('language', 'en')
   url.searchParams.set('format', 'json')
 

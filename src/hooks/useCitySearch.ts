@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { City } from '@/types'
+import type { CitiesApiResponse } from '@/types/api'
 import { useDebounce } from './useDebounce'
 
 interface UseCitySearchResult {
@@ -37,15 +38,24 @@ export function useCitySearch(): UseCitySearchResult {
         `/api/cities?query=${encodeURIComponent(searchQuery)}`,
       )
 
-      const data = await response.json()
+      const data: CitiesApiResponse = await response.json()
 
       if (!response.ok) {
-        setError(data.error?.message || 'Failed to search cities')
+        if ('error' in data) {
+          setError(data.error.message || 'Failed to search cities')
+        } else {
+          setError('Failed to search cities')
+        }
         setCities([])
         return
       }
 
-      setCities(data.data || [])
+      if ('data' in data) {
+        setCities(data.data)
+      } else {
+        setError('Invalid response format')
+        setCities([])
+      }
     } catch {
       setError('An unexpected error occurred')
       setCities([])
