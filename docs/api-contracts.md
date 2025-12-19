@@ -19,6 +19,8 @@ All API routes return JSON.
 - id: string (stable id, e.g. "lat,lon" or provider id)
 - name: string
 - country: string (or country_code)
+- admin1?: string (state/province/region)
+- admin2?: string (county/district)
 - lat: number
 - lon: number
 
