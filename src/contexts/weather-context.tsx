@@ -10,12 +10,14 @@ import {
 } from 'react'
 import type { City } from '@/types'
 import { useWeather } from '@/hooks/useWeather'
+import { useRecentSearches } from '@/hooks/useRecentSearches'
 
 interface WeatherContextType {
   weather: ReturnType<typeof useWeather>['weather']
   loading: boolean
   error: string | null
   handleCitySelect: (city: City) => void
+  recentSearches: ReturnType<typeof useRecentSearches>['recentSearches']
 }
 
 const WeatherContext = createContext<WeatherContextType | undefined>(undefined)
@@ -44,10 +46,13 @@ interface ReverseGeocodeApiResponse {
 
 export function WeatherProvider({ children }: { children: ReactNode }) {
   const { weather, loading, error, fetchWeather } = useWeather()
+  const { addRecentSearch, recentSearches } = useRecentSearches()
   const hasInitialized = useRef(false)
+  const lastSelectedCity = useRef<City | null>(null)
 
   const handleCitySelect = useCallback(
     (city: City) => {
+      lastSelectedCity.current = city
       const locationName = [city.name, city.admin1, city.country]
         .filter(Boolean)
         .join(', ')
@@ -55,6 +60,14 @@ export function WeatherProvider({ children }: { children: ReactNode }) {
     },
     [fetchWeather],
   )
+
+  // Track when weather is successfully fetched after a city selection
+  useEffect(() => {
+    if (weather && lastSelectedCity.current && !loading && !error) {
+      addRecentSearch(lastSelectedCity.current, weather)
+      lastSelectedCity.current = null
+    }
+  }, [weather, loading, error, addRecentSearch])
 
   useEffect(() => {
     if (hasInitialized.current) return
@@ -170,7 +183,7 @@ export function WeatherProvider({ children }: { children: ReactNode }) {
 
   return (
     <WeatherContext.Provider
-      value={{ weather, loading, error, handleCitySelect }}
+      value={{ weather, loading, error, handleCitySelect, recentSearches }}
     >
       {children}
     </WeatherContext.Provider>
