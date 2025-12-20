@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import type { City, Weather } from '@/types'
 
 export interface RecentSearch {
@@ -15,22 +15,16 @@ const MAX_RECENT_SEARCHES = 5
  * Stores the latest 5 searches in localStorage
  */
 export function useRecentSearches() {
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
-
-  // Load recent searches from localStorage on mount
-  useEffect(() => {
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored) as RecentSearch[]
-        setRecentSearches(parsed)
-      }
+      return stored ? (JSON.parse(stored) as RecentSearch[]) : []
     } catch (error) {
       console.error('Failed to load recent searches:', error)
+      return []
     }
-  }, [])
+  })
 
-  // Save to localStorage whenever recentSearches changes
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(recentSearches))
@@ -39,32 +33,15 @@ export function useRecentSearches() {
     }
   }, [recentSearches])
 
-  const addRecentSearch = useCallback((city: City, weather: Weather) => {
+  const addRecentSearch = (city: City, weather: Weather) => {
     setRecentSearches((prev) => {
-      // Remove if already exists (to avoid duplicates)
       const filtered = prev.filter((search) => search.city.id !== city.id)
-
-      // Add new search at the beginning
-      const newSearch: RecentSearch = {
-        city,
-        weather,
-        searchedAt: Date.now(),
-      }
-
-      // Keep only the latest MAX_RECENT_SEARCHES
-      const updated = [newSearch, ...filtered].slice(0, MAX_RECENT_SEARCHES)
-
-      return updated
+      const newSearch: RecentSearch = { city, weather, searchedAt: Date.now() }
+      return [newSearch, ...filtered].slice(0, MAX_RECENT_SEARCHES)
     })
-  }, [])
-
-  const clearRecentSearches = useCallback(() => {
-    setRecentSearches([])
-  }, [])
-
-  return {
-    recentSearches,
-    addRecentSearch,
-    clearRecentSearches,
   }
+
+  const clearRecentSearches = () => setRecentSearches([])
+
+  return { recentSearches, addRecentSearch, clearRecentSearches }
 }
