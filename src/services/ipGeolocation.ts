@@ -1,8 +1,4 @@
-/**
- * IP Geolocation service adapter
- * Maps provider responses to coordinates
- */
-
+// IP geolocation service using ip-api.com
 import 'server-only'
 
 interface IpGeolocationResponse {
@@ -14,6 +10,9 @@ interface IpGeolocationResponse {
   message?: string
 }
 
+const IP_GEOLOCATION_API_URL =
+  'http://ip-api.com/json/{ip}?fields=status,lat,lon'
+
 /**
  * Get approximate location from IP address using ip-api.com
  * @param ip - Client IP address
@@ -23,22 +22,12 @@ interface IpGeolocationResponse {
 export async function getLocationFromIp(
   ip: string,
 ): Promise<{ lat: number; lon: number } | null> {
-  // Use ip-api.com free service (no API key required)
-  // Format: http://ip-api.com/json/{ip}?fields=status,lat,lon
-  const url = `http://ip-api.com/json/${ip}?fields=status,lat,lon`
-
-  // Create abort controller for timeout
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 5000)
+  const url = IP_GEOLOCATION_API_URL.replace('{ip}', ip)
 
   let response: Response
   try {
-    response = await fetch(url, {
-      signal: controller.signal,
-    })
-    clearTimeout(timeoutId)
+    response = await fetch(url)
   } catch {
-    clearTimeout(timeoutId)
     return null
   }
 
@@ -53,16 +42,15 @@ export async function getLocationFromIp(
     return null
   }
 
-  // Check if request was successful
   if (data.status === 'fail' || data.message) {
     return null
   }
 
-  // Extract coordinates (ip-api uses 'lat' and 'lon')
+  // Handle both lat/lon and latitude/longitude field names
   const lat = data.lat ?? data.latitude
   const lon = data.lon ?? data.longitude
 
-  // Validate coordinates
+  // Validate coordinate ranges
   if (
     typeof lat !== 'number' ||
     typeof lon !== 'number' ||
