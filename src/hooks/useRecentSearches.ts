@@ -1,47 +1,50 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { City, Weather } from '@/types'
 
 export interface RecentSearch {
   city: City
   weather: Weather
-  searchedAt: number // timestamp
+  searchedAt: number
 }
 
 const STORAGE_KEY = 'weatherly_recent_searches'
 const MAX_RECENT_SEARCHES = 5
 
-/**
- * Custom hook for managing recent searches
- * Stores the latest 5 searches in localStorage
- */
 export function useRecentSearches() {
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => {
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
+  const [hasLoaded, setHasLoaded] = useState(false)
+
+  // Load once (client only)
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
-      return stored ? (JSON.parse(stored) as RecentSearch[]) : []
+      if (stored) setRecentSearches(JSON.parse(stored) as RecentSearch[])
     } catch (error) {
       console.error('Failed to load recent searches:', error)
-      return []
+    } finally {
+      setHasLoaded(true)
     }
-  })
+  }, [])
 
+  // Persist after initial load
   useEffect(() => {
+    if (!hasLoaded) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(recentSearches))
     } catch (error) {
       console.error('Failed to save recent searches:', error)
     }
-  }, [recentSearches])
+  }, [recentSearches, hasLoaded])
 
-  const addRecentSearch = (city: City, weather: Weather) => {
+  const addRecentSearch = useCallback((city: City, weather: Weather) => {
     setRecentSearches((prev) => {
-      const filtered = prev.filter((search) => search.city.id !== city.id)
-      const newSearch: RecentSearch = { city, weather, searchedAt: Date.now() }
-      return [newSearch, ...filtered].slice(0, MAX_RECENT_SEARCHES)
+      const filtered = prev.filter((s) => s.city.id !== city.id)
+      const next: RecentSearch = { city, weather, searchedAt: Date.now() }
+      return [next, ...filtered].slice(0, MAX_RECENT_SEARCHES)
     })
-  }
+  }, [])
 
-  const clearRecentSearches = () => setRecentSearches([])
+  const clearRecentSearches = useCallback(() => setRecentSearches([]), [])
 
   return { recentSearches, addRecentSearch, clearRecentSearches }
 }

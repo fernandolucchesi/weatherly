@@ -16,7 +16,7 @@ function getWeatherIconClass(
 
   // Mainly clear (1)
   if (weatherCode === 1) {
-    return isDay ? 'wi-day-sunny-overcast' : 'wi-night-alt-partly-cloudy'
+    return isDay ? 'wi-day-sunny-overcast' : 'wi-night-partly-cloudy'
   }
 
   // Partly cloudy (2)
