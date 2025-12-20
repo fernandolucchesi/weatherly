@@ -3,6 +3,8 @@
  * Maps provider responses to domain models
  */
 
+import 'server-only'
+
 import type {
   Weather,
   WeatherCondition,
