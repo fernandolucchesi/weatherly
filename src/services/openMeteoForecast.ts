@@ -5,12 +5,7 @@
 
 import 'server-only'
 
-import type {
-  Weather,
-  WeatherCondition,
-  HourlyForecast,
-  DailyForecast,
-} from '@/types'
+import type { Weather, HourlyForecast, DailyForecast } from '@/types'
 
 interface OpenMeteoCurrentWeather {
   temperature: number
@@ -50,56 +45,6 @@ interface OpenMeteoForecastResponse {
 }
 
 const FORECAST_API_URL = 'https://api.open-meteo.com/v1/forecast'
-
-/**
- * Maps WMO weather codes to normalized WeatherCondition
- * Based on WMO Weather interpretation codes (WW)
- */
-function mapWeatherCodeToCondition(weathercode: number): WeatherCondition {
-  // Clear sky
-  if (weathercode === 0) {
-    return 'clear'
-  }
-
-  // Mainly clear, partly cloudy, overcast (1-3)
-  if (weathercode >= 1 && weathercode <= 3) {
-    return 'cloudy'
-  }
-
-  // Fog and depositing rime fog (45, 48)
-  if (weathercode === 45 || weathercode === 48) {
-    return 'fog'
-  }
-
-  // Drizzle and rain (51-67)
-  if (weathercode >= 51 && weathercode <= 67) {
-    return 'rain'
-  }
-
-  // Snow (71-77)
-  if (weathercode >= 71 && weathercode <= 77) {
-    return 'snow'
-  }
-
-  // Rain showers, snow showers, and thunderstorms (80-99)
-  if (weathercode >= 80 && weathercode <= 99) {
-    // Thunderstorms are typically 95-99
-    if (weathercode >= 95) {
-      return 'thunder'
-    }
-    // Rain showers (80-82) or snow showers (85-86)
-    if (weathercode >= 80 && weathercode <= 82) {
-      return 'rain'
-    }
-    if (weathercode >= 85 && weathercode <= 86) {
-      return 'snow'
-    }
-    return 'rain' // Default for other shower types
-  }
-
-  // Default fallback
-  return 'cloudy'
-}
 
 /**
  * Fetches current weather and forecasts for given coordinates using Open-Meteo Forecast API
@@ -183,7 +128,7 @@ export async function getCurrentWeather(
     hourlyForecast = hourly.time.map((time, index) => ({
       time,
       temperatureC: hourly.temperature_2m[index] ?? 0,
-      conditionCode: mapWeatherCodeToCondition(hourly.weathercode[index] ?? 0),
+      weatherCode: hourly.weathercode[index] ?? 0,
       isDay: hourly.is_day[index] === 1,
       precipitation: hourly.precipitation?.[index],
       humidity: hourly.relativehumidity_2m?.[index],
@@ -200,7 +145,7 @@ export async function getCurrentWeather(
       date,
       temperatureMaxC: daily.temperature_2m_max[index] ?? 0,
       temperatureMinC: daily.temperature_2m_min[index] ?? 0,
-      conditionCode: mapWeatherCodeToCondition(daily.weathercode[index] ?? 0),
+      weatherCode: daily.weathercode[index] ?? 0,
       precipitation: daily.precipitation_sum?.[index],
       precipitationProbability: daily.precipitation_probability_max?.[index],
     }))
@@ -210,7 +155,7 @@ export async function getCurrentWeather(
   return {
     locationName,
     temperatureC: current.temperature,
-    conditionCode: mapWeatherCodeToCondition(current.weathercode),
+    weatherCode: current.weathercode,
     isDay: current.is_day === 1,
     timezone: data.timezone,
     hourly: hourlyForecast,

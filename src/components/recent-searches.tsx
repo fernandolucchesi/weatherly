@@ -65,13 +65,13 @@ export function RecentSearches() {
                     >
                       {search.weather.locationName}
                     </span>
-                    <div className="flex-shrink-0 flex items-center gap-2.5">
+                    <div className="shrink-0 flex items-center gap-2.5">
                       <span className="text-sm font-semibold text-foreground whitespace-nowrap tabular-nums">
                         {Math.round(search.weather.temperatureC)}°
                       </span>
-                      <div className="opacity-80">
+                      <div className="text-muted-foreground">
                         {getWeatherIcon(
-                          search.weather.conditionCode,
+                          search.weather.weatherCode,
                           search.weather.isDay,
                           'sm',
                         )}

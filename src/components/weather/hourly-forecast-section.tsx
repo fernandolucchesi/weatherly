@@ -84,7 +84,7 @@ export function HourlyForecastSection({
                 {index === 0 ? 'Now' : formatHour(hour.time)}
               </span>
               <div className="flex items-center justify-center">
-                {getWeatherIcon(hour.conditionCode, hour.isDay, 'sm')}
+                {getWeatherIcon(hour.weatherCode, hour.isDay, 'sm')}
               </div>
               <span className="text-sm font-semibold text-foreground">
                 {Math.round(hour.temperatureC)}°

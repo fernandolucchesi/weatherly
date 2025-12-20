@@ -15,7 +15,7 @@ export interface City {
 export interface Weather {
   locationName: string
   temperatureC: number
-  conditionCode: WeatherCondition
+  weatherCode: number // WMO weather code (0-99)
   isDay?: boolean
   timezone?: string // IANA timezone identifier (e.g., "America/New_York")
   hourly?: HourlyForecast[]
@@ -25,7 +25,7 @@ export interface Weather {
 export interface HourlyForecast {
   time: string // ISO 8601 datetime string
   temperatureC: number
-  conditionCode: WeatherCondition
+  weatherCode: number // WMO weather code (0-99)
   isDay?: boolean
   precipitation?: number // mm
   humidity?: number // percentage
@@ -35,15 +35,9 @@ export interface DailyForecast {
   date: string // YYYY-MM-DD
   temperatureMaxC: number
   temperatureMinC: number
-  conditionCode: WeatherCondition
+  weatherCode: number // WMO weather code (0-99)
   precipitation?: number // mm
   precipitationProbability?: number // percentage
 }
 
-export type WeatherCondition =
-  | 'clear'
-  | 'cloudy'
-  | 'rain'
-  | 'snow'
-  | 'fog'
-  | 'thunder'
+// WeatherCondition type removed - using WMO weather codes directly

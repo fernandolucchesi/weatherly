@@ -58,7 +58,7 @@ export function WeatherDisplay({
           </h2>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="w-fit">
-              {getWeatherLabel(weather.conditionCode)}
+              {getWeatherLabel(weather.weatherCode)}
             </Badge>
             <span className="text-xs text-muted-foreground">
               {formatCurrentTime(weather.timezone)}
@@ -66,7 +66,7 @@ export function WeatherDisplay({
           </div>
         </div>
         <div className="flex items-center justify-center">
-          {getWeatherIcon(weather.conditionCode, weather.isDay, 'lg')}
+          {getWeatherIcon(weather.weatherCode, weather.isDay, 'lg')}
         </div>
       </div>
 

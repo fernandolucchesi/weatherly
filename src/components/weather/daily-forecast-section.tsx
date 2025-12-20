@@ -19,7 +19,7 @@ export function DailyForecastSection({ daily }: DailyForecastSectionProps) {
           >
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center">
-                {getWeatherIcon(day.conditionCode, true, 'sm')}
+                {getWeatherIcon(day.weatherCode, true, 'sm')}
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-semibold text-foreground">
