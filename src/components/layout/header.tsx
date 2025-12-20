@@ -1,7 +1,7 @@
 'use client'
 
 import { CitySearch } from '@/components/city-search'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { useWeatherContext } from '@/contexts/weather-context'
 import { Cloud } from 'lucide-react'
 import Link from 'next/link'

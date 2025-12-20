@@ -9,7 +9,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8">
         <div className="flex h-full items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            Displaying the weather wether you want it or not.
+            Showing the weather wether you want it or not.
           </p>
 
           <Link href="/" className="flex items-center font-semibold shrink-0">

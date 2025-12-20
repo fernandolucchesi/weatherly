@@ -152,12 +152,13 @@ export async function getCurrentWeather(
   }
 
   // Map provider response to domain model
+  // timezone should always be present when using 'auto', but fallback to UTC if missing
   return {
     locationName,
     temperatureC: current.temperature,
     weatherCode: current.weathercode,
     isDay: current.is_day === 1,
-    timezone: data.timezone,
+    timezone: data.timezone || 'UTC',
     hourly: hourlyForecast,
     daily: dailyForecast,
   }

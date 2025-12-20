@@ -38,25 +38,25 @@ export function RecentSearches() {
         </button>
       </CardHeader>
       {isExpanded && (
-        <CardContent className="pt-0 pb-2 px-3">
+        <CardContent className="pt-0">
           {recentSearches.length === 0 ? (
-            <div className="text-center py-2">
-              <Clock className="h-8 w-8 mx-auto mb-2 text-muted-foreground opacity-50" />
+            <div className="text-center py-4">
+              <Clock className="h-8 w-8 mx-auto mb-3 text-muted-foreground opacity-50" />
               <p className="text-sm text-muted-foreground">
                 No recent searches yet
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-2">
                 Search for a city to get started
               </p>
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-2">
               {recentSearches.map((search) => (
                 <button
                   key={`${search.city.id}-${search.searchedAt}`}
                   onClick={() => handleCitySelect(search.city)}
                   title={`View weather for ${search.weather.locationName}`}
-                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 dark:bg-zinc-900/50 dark:border-zinc-800 p-2 text-left transition-all duration-200 hover:border-zinc-300 hover:bg-zinc-100 hover:shadow-sm dark:hover:border-zinc-700 dark:hover:bg-zinc-800/80 active:scale-[0.98]"
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 dark:bg-zinc-900/50 dark:border-zinc-800 p-3 text-left transition-all duration-200 hover:border-zinc-300 hover:bg-zinc-100 hover:shadow-sm dark:hover:border-zinc-700 dark:hover:bg-zinc-800/80 active:scale-[0.98]"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span
@@ -65,7 +65,7 @@ export function RecentSearches() {
                     >
                       {search.weather.locationName}
                     </span>
-                    <div className="shrink-0 flex items-center gap-2.5">
+                    <div className="shrink-0 flex items-center gap-2">
                       <span className="text-sm font-semibold text-foreground whitespace-nowrap tabular-nums">
                         {Math.round(search.weather.temperatureC)}°
                       </span>

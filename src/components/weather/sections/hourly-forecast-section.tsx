@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Droplets } from 'lucide-react'
 import type { HourlyForecast } from '@/types'
-import { getWeatherIcon } from './utils/weather-icons'
-import { formatHour, getCurrentHourString } from './utils/date-formatters'
+import { getWeatherIcon } from '../utils/weather-icons'
+import { formatHour, getCurrentHourString } from '../utils/date-formatters'
 
 interface HourlyForecastSectionProps {
   hourly: HourlyForecast[]
-  timezone?: string
+  timezone: string
 }
 
 export function HourlyForecastSection({
@@ -67,7 +67,7 @@ export function HourlyForecastSection({
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-foreground">
+      <h3 className="px-3 text-sm font-semibold text-foreground">
         24-Hour Forecast
       </h3>
       <div className="relative">
@@ -78,7 +78,7 @@ export function HourlyForecastSection({
           {displayHours.map((hour, index) => (
             <div
               key={`${hour.time}-${index}`}
-              className="flex min-w-[80px] flex-col items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 transition-colors hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+              className="flex min-w-[80px] flex-col items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
             >
               <span className="text-xs font-medium text-muted-foreground">
                 {index === 0 ? 'Now' : formatHour(hour.time)}
@@ -100,11 +100,11 @@ export function HourlyForecastSection({
         </div>
         {/* Left side gradient fade */}
         {showLeftGradient && (
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-linear-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-linear-to-r from-card to-transparent" />
         )}
         {/* Right side gradient fade */}
         {showRightGradient && (
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-linear-to-l from-background to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-linear-to-l from-card to-transparent" />
         )}
       </div>
     </div>

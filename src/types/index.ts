@@ -17,7 +17,7 @@ export interface Weather {
   temperatureC: number
   weatherCode: number // WMO weather code (0-99)
   isDay?: boolean
-  timezone?: string // IANA timezone identifier (e.g., "America/New_York")
+  timezone: string // IANA timezone identifier (e.g., "America/New_York") - always provided by API
   hourly?: HourlyForecast[]
   daily?: DailyForecast[]
 }

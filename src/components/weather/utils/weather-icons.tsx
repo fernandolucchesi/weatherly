@@ -164,7 +164,7 @@ export function getWeatherLabel(weatherCode: number): string {
 export function getWeatherIcon(
   weatherCode: number,
   isDay?: boolean,
-  size: 'sm' | 'md' | 'lg' = 'md',
+  size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' = 'md',
 ) {
   const iconClass = getWeatherIconClass(weatherCode, isDay ?? true)
 
@@ -176,6 +176,8 @@ export function getWeatherIcon(
         size === 'sm' && 'text-sm',
         size === 'md' && 'text-lg',
         size === 'lg' && 'text-5xl',
+        size === 'xl' && 'text-8xl',
+        size === '2xl' && 'text-9xl',
       )}
       aria-hidden="true"
     />
