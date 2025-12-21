@@ -19,6 +19,7 @@ Location-aware weather with city autocomplete, recent searches, and Open-Meteo d
 - Geocoding: Open-Meteo Geocoding
 - Reverse geocoding: Nominatim
 - IP fallback: ip-api.com
+- Outfit AI (optional): OpenAI (set `OPENAI_API_KEY`)
 
 ### Running locally
 
