@@ -7,6 +7,7 @@
 - Tailwind CSS
 - shadcn/ui
 - Zod for runtime validation
+- SWR for data fetching with automatic caching, deduplication, and background revalidation
 
 ## External APIs (Open-Meteo)
 
@@ -37,3 +38,7 @@
 
 UI -> /app/api/cities -> Open-Meteo Geocoding
 UI -> /app/api/weather -> Open-Meteo Forecast
+
+## Conventions
+
+- Prefer named React imports (e.g., `import { useState } from 'react'`) rather than namespace imports.

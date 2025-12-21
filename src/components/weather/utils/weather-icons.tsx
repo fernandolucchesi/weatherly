@@ -166,7 +166,7 @@ export function getWeatherIcon(
   isDay?: boolean,
   size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' = 'md',
 ) {
-  const iconClass = getWeatherIconClass(weatherCode, isDay ?? true)
+  const iconClass = getWeatherIconClass(weatherCode, isDay ?? false)
 
   return (
     <i

@@ -2,6 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import type { Weather } from '@/types'
 import { getCurrentHourString, isToday } from '../utils/date-formatters'
 import { WeatherHeader } from './weather-header'
@@ -14,12 +15,16 @@ interface WeatherDisplayProps {
   weather: Weather | null
   loading: boolean
   error: string | null
+  locationStatus?: string
+  onRetryLocation?: () => void
 }
 
 export function WeatherDisplay({
   weather,
   loading,
   error,
+  locationStatus,
+  onRetryLocation,
 }: WeatherDisplayProps) {
   if (loading) {
     return (
@@ -78,8 +83,25 @@ export function WeatherDisplay({
     return (
       <Card className="w-full">
         <CardContent>
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950 dark:text-red-200">
-            {error}
+          <div className="space-y-3">
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950 dark:text-red-200">
+              {error}
+            </div>
+            {locationStatus && (
+              <p className="text-xs text-muted-foreground">
+                Location status: {locationStatus}
+              </p>
+            )}
+            {onRetryLocation && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onRetryLocation}
+                className="w-full sm:w-auto"
+              >
+                Retry location detection
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -90,9 +112,19 @@ export function WeatherDisplay({
     return (
       <Card className="w-full">
         <CardContent>
-          <p className="text-sm text-center text-zinc-600 dark:text-zinc-400">
-            Select a city to view weather information
-          </p>
+          <div className="flex flex-col items-center gap-3 text-center py-6">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Select a city or use your location to view weather information.
+            </p>
+            {locationStatus && (
+              <p className="text-xs text-muted-foreground">{locationStatus}</p>
+            )}
+            {onRetryLocation && (
+              <Button variant="outline" size="sm" onClick={onRetryLocation}>
+                Use my location
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     )

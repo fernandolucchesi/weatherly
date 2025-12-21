@@ -1,6 +1,14 @@
 'use client'
 
-import * as React from 'react'
+import {
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type RefObject,
+} from 'react'
 import type { City } from '@/types'
 import { useCitySearch } from '@/hooks/useCitySearch'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
@@ -20,61 +28,47 @@ export function CitySearch({
 }: CitySearchProps) {
   const { query, setQuery, cities, loading, error } = useCitySearch()
 
-  const containerRef = React.useRef<HTMLDivElement>(null)
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const [open, setOpen] = React.useState(false)
-  const [hasTyped, setHasTyped] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const canSearch = query.trim().length >= minChars
-  const listId = React.useId()
-  const statusId = React.useId()
-  const instructionsId = React.useId()
+  const isOpen = open && canSearch
+  const listId = useId()
+  const statusId = useId()
+  const instructionsId = useId()
 
-  // Open/close based on typing + min length
-  React.useEffect(() => {
-    if (!hasTyped) return
-    setOpen(canSearch)
-  }, [canSearch, hasTyped])
-
-  // Keep input focused when popover opens due to typing/results
-  React.useEffect(() => {
-    if (!open) return
-    requestAnimationFrame(() => inputRef.current?.focus())
-  }, [open, cities.length, loading, error])
-
-  const handleSelect = React.useCallback(
+  const handleSelect = useCallback(
     (city: City) => {
       onCitySelect?.(city)
       setQuery('')
-      setHasTyped(false)
       setOpen(false)
       inputRef.current?.blur()
     },
     [onCitySelect, setQuery],
   )
 
-  const handleValueChange = React.useCallback(
+  const handleValueChange = useCallback(
     (value: string) => {
       setQuery(value)
-      setHasTyped(true)
       setOpen(value.trim().length >= minChars)
     },
     [setQuery, minChars],
   )
 
-  const handleFocus = React.useCallback(() => {
+  const handleFocus = useCallback(() => {
     if (query.trim().length >= minChars) setOpen(true)
   }, [query, minChars])
 
-  const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       setOpen(false)
       inputRef.current?.blur()
     }
   }, [])
 
-  const announcement = React.useMemo(() => {
+  const announcement = useMemo(() => {
     if (!canSearch) return ''
     if (loading) return 'Searching for cities...'
     if (error) return `Error: ${error}`
@@ -100,11 +94,8 @@ export function CitySearch({
       </div>
 
       <Popover
-        open={open}
-        onOpenChange={(next) => {
-          if (next && !canSearch) return
-          setOpen(next)
-        }}
+        open={isOpen}
+        onOpenChange={(next) => setOpen(next && canSearch)}
       >
         <PopoverAnchor asChild>
           <div className="w-full">
@@ -114,11 +105,11 @@ export function CitySearch({
               onFocus={handleFocus}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              open={open}
+              open={isOpen}
               listId={listId}
               statusId={statusId}
               instructionsId={instructionsId}
-              inputRef={inputRef as React.RefObject<HTMLInputElement>}
+              inputRef={inputRef as RefObject<HTMLInputElement>}
             />
           </div>
         </PopoverAnchor>

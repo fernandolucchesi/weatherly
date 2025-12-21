@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
+import useSWR from 'swr'
 import type { City } from '@/types'
 import type { CitiesApiResponse } from '@/types/api'
 import { useDebounce } from './useDebounce'
@@ -17,62 +18,47 @@ interface UseCitySearchResult {
  */
 export function useCitySearch(): UseCitySearchResult {
   const [query, setQuery] = useState('')
-  const [cities, setCities] = useState<City[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
   const debouncedQuery = useDebounce(query, 300)
+  const canSearch = debouncedQuery.trim().length >= 2
+  const searchKey = canSearch ? debouncedQuery.trim() : null
 
-  const searchCities = useCallback(async (searchQuery: string) => {
-    if (searchQuery.length < 2) {
-      setCities([])
-      setError(null)
-      return
+  const fetchCities = useCallback(async (searchQuery: string) => {
+    const response = await fetch(
+      `/api/cities?query=${encodeURIComponent(searchQuery)}`,
+    )
+
+    const data: CitiesApiResponse = await response.json()
+
+    if (!response.ok) {
+      if ('error' in data) {
+        throw new Error(data.error.message || 'Failed to search cities')
+      }
+      throw new Error('Failed to search cities')
     }
 
-    setLoading(true)
-    setError(null)
-
-    try {
-      const response = await fetch(
-        `/api/cities?query=${encodeURIComponent(searchQuery)}`,
-      )
-
-      const data: CitiesApiResponse = await response.json()
-
-      if (!response.ok) {
-        if ('error' in data) {
-          setError(data.error.message || 'Failed to search cities')
-        } else {
-          setError('Failed to search cities')
-        }
-        setCities([])
-        return
-      }
-
-      if ('data' in data) {
-        setCities(data.data)
-      } else {
-        setError('Invalid response format')
-        setCities([])
-      }
-    } catch {
-      setError('An unexpected error occurred')
-      setCities([])
-    } finally {
-      setLoading(false)
+    if ('data' in data) {
+      return data.data
     }
+
+    throw new Error('Invalid response format')
   }, [])
 
-  useEffect(() => {
-    searchCities(debouncedQuery)
-  }, [debouncedQuery, searchCities])
+  const {
+    data: cities,
+    error,
+    isValidating,
+  } = useSWR<City[]>(searchKey, fetchCities, {
+    // SWR handles deduping, caching, and keeps previous data visible,
+    // which avoids manual loading/error bookkeeping and stale responses.
+    revalidateOnFocus: false,
+    keepPreviousData: true,
+  })
 
   return {
     query,
     setQuery,
-    cities,
-    loading,
-    error,
+    cities: cities ?? [],
+    loading: Boolean(searchKey) && isValidating,
+    error: error ? error.message : null,
   }
 }

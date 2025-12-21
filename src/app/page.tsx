@@ -5,7 +5,8 @@ import { useWeatherContext } from '@/contexts/weather-context'
 import { RecentSearches } from '@/components/recent-searches'
 
 export default function Home() {
-  const { weather, loading, error } = useWeatherContext()
+  const { weather, loading, error, locationStatus, retryInitialLocation } =
+    useWeatherContext()
 
   return (
     <div className="flex min-h-svh justify-center bg-background font-sans">
@@ -15,7 +16,13 @@ export default function Home() {
             <RecentSearches />
           </div>
           <div className="lg:col-span-3 order-1 lg:order-2">
-            <WeatherDisplay weather={weather} loading={loading} error={error} />
+            <WeatherDisplay
+              weather={weather}
+              loading={loading}
+              error={error}
+              locationStatus={locationStatus}
+              onRetryLocation={retryInitialLocation}
+            />
           </div>
 
           <div className="lg:col-span-2 order-3"></div>
