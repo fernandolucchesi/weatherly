@@ -11,6 +11,7 @@ Location-aware weather with city autocomplete, recent searches, and Open-Meteo d
 - Try device geolocation first
 - Fall back to IP-based lookup
 - Final fallback: Oslo, Norway (59.9139, 10.7522)
+- Note: Geolocation is requested on load for a smoother UX; this trade-off is known to trigger Lighthouse’s “don’t request geolocation on page load” best-practice audit ([Chrome guidance](https://developer.chrome.com/docs/lighthouse/best-practices/geolocation-on-start/?utm_source=lighthouse&utm_medium=devtools)).
 
 ### Data sources
 
@@ -49,6 +50,9 @@ yarn test
 
 ### Tech
 
-- Next.js 16 (app router), React 19, Tailwind
-- Open-Meteo (forecast + geocoding), Nominatim reverse geocode, ip-api.com fallback
-- Vitest + Testing Library for unit/integration specs
+- Next.js 16 (App Router), React 19, Tailwind 4
+- UI: Shadcn, Weather Icons
+- State/data: SWR for city search, custom hooks for weather fetching and location
+- Theming: next-themes
+- APIs: Open-Meteo (forecast + geocoding), Nominatim reverse geocode, ip-api.com fallback
+- Tooling: TypeScript, ESLint, Vitest + Testing Library (unit/integration)
