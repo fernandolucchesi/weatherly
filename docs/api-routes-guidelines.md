@@ -8,7 +8,7 @@
 ## /api/geo
 
 - Must run server-side (reads client IP from request headers)
-- Used only when browser geolocation is denied or unavailable
+- Used when browser geolocation is denied or unavailable (or as initial approx fallback)
 - Uses an IP geolocation provider via /services
 - Must fall back to default city if provider fails
 
@@ -18,7 +18,8 @@
   - resolves query -> candidate locations with lat/lon
 - /api/weather calls Open-Meteo Forecast:
   - uses lat/lon to retrieve current weather, 24-hour hourly forecast, and 7-day daily forecast
-  - returns normalized Weather object with current conditions, hourly array, and daily array
+  - returns normalized Weather object with WMO weatherCode, isDay, timezone, hourly array, and daily array
+- /api/reverse-geocode calls Nominatim to resolve lat/lon -> location name
 
 ## Validation (Zod required)
 
@@ -46,6 +47,8 @@
   - rate limit (basic) and avoid heavy caching
 - /api/geo (if used):
   - short caching is fine
+- /api/reverse-geocode:
+  - cache-friendly; short TTL recommended
 
 ## Error mapping
 

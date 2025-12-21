@@ -28,28 +28,17 @@ All API routes return JSON.
 
 - locationName: string
 - temperatureC: number
-- conditionCode: WeatherCondition
+- weatherCode: number (WMO code 0-99)
 - isDay?: boolean
-- timezone?: string (IANA timezone identifier, e.g., "America/New_York")
-- hourly?: HourlyForecast[] (24-hour forecast)
-- daily?: DailyForecast[] (7-day forecast)
-
-### WeatherCondition (normalized)
-
-One of:
-
-- clear
-- cloudy
-- rain
-- snow
-- fog
-- thunder
+- timezone: string (IANA timezone identifier, e.g., "America/New_York"; defaults to UTC)
+- hourly?: HourlyForecast[] (up to 24–48 hours)
+- daily?: DailyForecast[] (up to 7 days)
 
 ### HourlyForecast
 
 - time: string (ISO 8601 datetime string)
 - temperatureC: number
-- conditionCode: WeatherCondition
+- weatherCode: number (WMO)
 - isDay?: boolean
 - precipitation?: number (mm)
 - humidity?: number (percentage)
@@ -59,7 +48,7 @@ One of:
 - date: string (YYYY-MM-DD format)
 - temperatureMaxC: number
 - temperatureMinC: number
-- conditionCode: WeatherCondition
+- weatherCode: number (WMO)
 - precipitation?: number (mm)
 - precipitationProbability?: number (percentage)
 
@@ -120,3 +109,23 @@ Purpose: fallback coordinates when browser geolocation is denied/unavailable.
 Errors:
 
 - 502 PROVIDER_ERROR (IP geo provider failed)
+
+---
+
+## GET /api/reverse-geocode?lat=&lon=
+
+Purpose: reverse geocode coordinates to a display name.
+
+Query:
+
+- lat: number (latitude, -90 to 90)
+- lon: number (longitude, -180 to 180)
+
+200:
+{ "data": { "locationName": string | null } }
+
+Errors:
+
+- 400 VALIDATION (missing/invalid lat/lon)
+- 429 RATE_LIMITED (provider rate limit)
+- 502 PROVIDER_ERROR (provider failed)

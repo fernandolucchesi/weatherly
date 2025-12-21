@@ -9,10 +9,12 @@
 - Zod for runtime validation
 - SWR for data fetching with automatic caching, deduplication, and background revalidation
 
-## External APIs (Open-Meteo)
+## External APIs
 
-- Geocoding API: resolves city text -> coordinates (lat/lon)
-- Forecast API: retrieves weather using coordinates (lat/lon)
+- Open-Meteo Geocoding: resolves city text -> coordinates (lat/lon)
+- Open-Meteo Forecast: retrieves weather using coordinates (lat/lon)
+- Nominatim: reverse geocoding (lat/lon -> location name)
+- ip-api.com: IP-based geolocation fallback
 
 ## Canonical Location Rule
 
@@ -22,9 +24,9 @@
 
 ## Default location strategy
 
-1) Browser geolocation (most accurate)
-2) Server IP-based geolocation via /api/geo (approx)
-3) Default city fallback (deterministic)
+1) Browser geolocation on load (smoother UX; acknowledged Lighthouse trade-off)
+2) Server IP-based geolocation via `/api/geo` (approx)
+3) Default city fallback (deterministic; Oslo, Norway)
 
 ## Rules
 
@@ -33,11 +35,14 @@
 - API routes call provider adapters in /services.
 - API routes normalize output into domain models in /types.
 - API responses are stable: { data } on success, { error } on failure.
+- Weather uses WMO weather codes (0-99) and optional isDay flag; labels/icons derived client-side.
 
 ## Data Flow
 
 UI -> /app/api/cities -> Open-Meteo Geocoding
 UI -> /app/api/weather -> Open-Meteo Forecast
+UI -> /app/api/reverse-geocode -> Nominatim
+UI -> /app/api/geo -> ip-api.com
 
 ## Conventions
 
