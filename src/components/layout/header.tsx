@@ -18,7 +18,8 @@ export function Header() {
             className="flex items-center  font-semibold md:col-span-2 shrink-0"
           >
             <Cloud className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span className="text-lg sm:text-xl tracking-tighter">
+            <span className="text-lg tracking-tighter sm:hidden">Wtrly.</span>
+            <span className="hidden text-lg sm:inline sm:text-xl tracking-tighter">
               Weatherly.
             </span>
           </Link>
