@@ -1,7 +1,3 @@
----
-title: Weatherly
----
-
 ## Weatherly
 
 Location-aware weather with city autocomplete, recent searches, and Open-Meteo data. Live at <https://myweatherlyapp.vercel.app/>
