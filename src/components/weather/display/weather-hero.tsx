@@ -27,19 +27,9 @@ export function WeatherHero({
           <span className="text-3xl text-muted-foreground">°C</span>
         </div>
         {todayForecast && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>
-              H:{' '}
-              <span className="font-medium">
-                {Math.round(todayForecast.temperatureMaxC)}°
-              </span>
-            </span>
-            <span>
-              L:{' '}
-              <span className="font-medium">
-                {Math.round(todayForecast.temperatureMinC)}°
-              </span>
-            </span>
+          <div className="text-sm text-muted-foreground">
+            H:{Math.round(todayForecast.temperatureMaxC)}° L:
+            {Math.round(todayForecast.temperatureMinC)}°
           </div>
         )}
       </div>
